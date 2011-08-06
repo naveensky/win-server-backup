@@ -1,0 +1,9 @@
+*.pdb
+*.cache
+bin
+obj
+Temp
+trunk/backup/TestResults
+_ReSharper.Backup
+*.user
+*.suo
