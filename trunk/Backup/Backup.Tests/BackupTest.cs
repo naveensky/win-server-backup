@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
@@ -18,10 +19,11 @@ namespace Backup.Tests {
             var backupCreator = new MsSqlBackupCreator {
                 Credentials = new NetworkCredential("sa", "asdf"),
                 DatabaseName = "decristal",
-                FilePath = @"E:\projects\De Cristal",
+                FilePath = @"E:\projects\De Cristal\",
                 HostName = @"laptop-001\sqlexpress"
             };
             backupCreator.CreateBackup();
+            Assert.AreEqual(true, File.Exists(string.Format(@"E:\projects\De Cristal\decristal.{0}.bak", DateTime.Now.ToString("yyyyMMdd"))));
 
         }
 
@@ -29,6 +31,9 @@ namespace Backup.Tests {
         public void Can_Create_FileSystem_Backup() {
             IFsBackupCreator creator = new FsBackupCreator();
             creator.CreateBackup(@"E:\projects\De Cristal", @"E:\projects\De Cristal");
+            Assert.IsTrue(
+                File.Exists(string.Format(@"E:\projects\De Cristal\De Cristal.{0}.zip",
+                                          DateTime.Now.ToString("yyyyMMdd"))));
         }
 
         [TestMethod]
