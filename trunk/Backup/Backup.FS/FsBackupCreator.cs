@@ -9,17 +9,25 @@ using Ionic.Zip;
 namespace Backup.FS {
     public class FsBackupCreator : IFsBackupCreator {
         private ZipFile _zipFile;
+        private DateTime _runtime;
 
-        public void CreateBackup(string sourceDirectoryPath, string destinationDirectory) {
+        public FsBackupCreator(DateTime runTime) {
+            _runtime = runTime;
+        }
+
+        public string CreateBackup(string sourceDirectoryPath, string destinationDirectory) {
             //return if no directory exists
             if (!Directory.Exists(sourceDirectoryPath))
-                return;
+                return null;
+
+            var archiveFilename = AppUtil.GetArchiveName(GetArchivePath(sourceDirectoryPath, destinationDirectory));
 
             using (var zipFile = new ZipFile()) {
                 zipFile.AddDirectory(sourceDirectoryPath);
-                zipFile.Save(AppUtil.GetArchiveName(GetArchivePath(sourceDirectoryPath, destinationDirectory)));
+                zipFile.Save(archiveFilename);
             }
 
+            return archiveFilename;
         }
 
         private string GetArchivePath(string sourceDirectoryPath, string destinationDirectory) {
