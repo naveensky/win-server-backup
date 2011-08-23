@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using Backup.FS;
@@ -26,9 +27,10 @@ namespace Backup.BO {
         public void Run() {
             //TODO : make mechanism to set state of IsRunning
             var backupExecuter = new RunnerThread(Settings);
-            var runnerThread = new Thread(new ThreadStart(backupExecuter.Run));
-            runnerThread.Start();
-            runnerThread.Join();
+            backupExecuter.Run();
+            //var runnerThread = new Thread(new ThreadStart(backupExecuter.Run));
+            //runnerThread.Start();
+            //runnerThread.Join();
         }
 
     }
@@ -43,8 +45,8 @@ namespace Backup.BO {
         }
 
         public void Run() {
-            var fsDataPath = string.Format(@"{0}\{1}\fs", Path.GetTempPath(), _backupTime.ToAppDateToString());
-            var sqlDataPath = string.Format(@"{0}\{1}\sql", Path.GetTempPath(), _backupTime.ToAppDateToString());
+            var fsDataPath = string.Format(@"{0}\{1}\fs", _settings.TempDirectory, _backupTime.ToAppDateToString());
+            var sqlDataPath = string.Format(@"{0}\{1}\sql", _settings.TempDirectory, _backupTime.ToAppDateToString());
 
             if (!Directory.Exists(fsDataPath))
                 Directory.CreateDirectory(fsDataPath);
@@ -82,6 +84,11 @@ namespace Backup.BO {
 
             ftpManager.TransferFile(fsBackupFiles, ftpFsRootPath);
             ftpManager.TransferFile(sqlBackupFiles, ftpSqlRootPath);
+        }
+
+
+        private string GetDirectory() {
+            return Path.GetTempPath();
         }
     }
 }

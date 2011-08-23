@@ -16,6 +16,7 @@ namespace Backup.BO {
         public string DatabaseServer { get; set; }
         public string DatabaseUsername { get; set; }
         public string DatabasePassword { get; set; }
+        public string TempDirectory { get; set; }
 
         public static Settings Create(IEnumerable<string> databases, IEnumerable<string> directories,
             NetworkCredential credential, string ftpRoot, string ftpHostname, string databaseUsername, string databaseServer, string databasePassword) {

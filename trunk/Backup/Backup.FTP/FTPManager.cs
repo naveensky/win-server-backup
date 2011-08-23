@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.FtpClient;
 using System.Text;
 
 namespace Backup.Ftp {
@@ -19,40 +20,39 @@ namespace Backup.Ftp {
             Port = 21;
         }
 
-        public void TransferFile(IEnumerable<string> files, string ftpDirectoryPath) {
-            foreach (var file in files) {
-                //if file doesnt exists, dont ftp anything
-                if (!File.Exists(file))
-                    continue;
-
-                var fileName = new FileInfo(file).Name;
-                var uri = new UriBuilder {
-                    Host = string.Format("{0}", Hostname),
-                    Path = string.Format("{0}/{1}", ftpDirectoryPath, fileName),
-                    Port = Port,
-                    Scheme = "ftp"
-                };
-
-                var request = (FtpWebRequest)WebRequest.Create(uri.Uri);
-
-                request.Credentials = Credential;
-                request.KeepAlive = true;
-                request.UseBinary = true;
-
-                request.KeepAlive = true;
-                request.UseBinary = true;
-                request.Method = WebRequestMethods.Ftp.UploadFile;
-                var ftpstream = request.GetRequestStream();
-
-
-                var fs = File.OpenRead(file);
-                var buffer = new byte[fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                fs.Close();
-                ftpstream.Write(buffer, 0, buffer.Length);
-
-                ftpstream.Close();
+        public bool TransferFile(IEnumerable<string> files, string ftpDirectoryPath) {
+            CreateFtpDirectory(ftpDirectoryPath);
+            using (var ftpClient = CreateClient()) {
+                foreach (var file in files) {
+                    var remotePath = string.Format(@"{0}\{1}", ftpDirectoryPath, file.Split(new[] { '\\' }).Last());
+                    ftpClient.Upload(file, remotePath, FtpDataType.Binary);
+                }
             }
+            return true;
+        }
+
+        private void CreateFtpDirectory(string ftpDirectoryPath) {
+            var directoryPath = ftpDirectoryPath.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+            using (var ftpclient = CreateClient()) {
+                foreach (var path in directoryPath) {
+                    if (!ftpclient.DirectoryExists(path))
+                        ftpclient.CreateDirectory(path);
+                    ftpclient.SetWorkingDirectory(path);
+                }
+            }
+        }
+
+        private FtpClient CreateClient() {
+            return new FtpClient() {
+                Username = Credential.UserName,
+                Password = Credential.Password,
+                Server = Hostname,
+                Port = Port,
+                SslMode = FtpSslMode.None,
+                //DataChannelEncryption = true,
+                //DataChannelType = FtpDataChannelType.Active
+            };
         }
     }
 }

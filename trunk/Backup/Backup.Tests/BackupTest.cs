@@ -20,7 +20,7 @@ namespace Backup.Tests {
             var backupCreator = new MsSqlBackupCreator(DateTime.Now) {
                 Credentials = new NetworkCredential("sa", "asdf"),
                 DatabaseName = "decristal",
-                FilePath = @"E:\projects\De Cristal\",
+                FilePath = @"E:\projects\De Cristal\portal",
                 HostName = @"laptop-001\sqlexpress"
             };
             var file = backupCreator.CreateBackup();
@@ -41,7 +41,7 @@ namespace Backup.Tests {
                 Credential = new NetworkCredential("softwareftp", "Asdf1234")
             };
             IList<String> files = new List<string> { @"C:\Users\admin\Desktop\chat.xps" };
-            manager.TransferFile(files, "");
+            Assert.IsTrue(manager.TransferFile(files, @"\2011.08.20\FS"));
         }
 
         [TestMethod]
@@ -65,7 +65,8 @@ namespace Backup.Tests {
                 Directories = new List<string> { @"E:\projects\De Cristal\portal\deploy" },
                 FtpCredentials = new NetworkCredential("softwareftp", "Asdf1234"),
                 FtpHostname = "118.139.186.1",
-                FtpRoot = ""
+                FtpRoot = "",
+                TempDirectory = @"c:\temp"
             };
 
             runner.Run();

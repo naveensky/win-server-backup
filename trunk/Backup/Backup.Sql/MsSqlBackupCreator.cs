@@ -34,7 +34,9 @@ namespace Backup.Sql {
         public string CreateBackup() {
             var command = GetBackupCommand();
             command.ExecuteNonQuery();
-            return _fileCompletePath;
+            var archivePath = string.Format("{0}.zip", _fileCompletePath);
+            AppUtil.CreateArchive(_fileCompletePath, archivePath);
+            return archivePath;
         }
 
         private SqlConnection GetConnection() {
