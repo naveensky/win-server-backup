@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup.BO", "Backup.BO\Back
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup.Service", "Backup.Service\Backup.Service.csproj", "{3960C28C-2998-429D-A3C5-EEEABA7BE1D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup.Launcher", "Backup.Launcher\Backup.Launcher.csproj", "{9CCEEF29-6782-4384-9984-1BA3A79A7712}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Backup.vsmdi
@@ -117,6 +119,16 @@ Global
 		{3960C28C-2998-429D-A3C5-EEEABA7BE1D8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3960C28C-2998-429D-A3C5-EEEABA7BE1D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3960C28C-2998-429D-A3C5-EEEABA7BE1D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Debug|x86.ActiveCfg = Debug|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Debug|x86.Build.0 = Debug|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Release|Any CPU.ActiveCfg = Release|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Release|x86.ActiveCfg = Release|x86
+		{9CCEEF29-6782-4384-9984-1BA3A79A7712}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

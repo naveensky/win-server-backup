@@ -7,6 +7,7 @@ using System.Net.FtpClient;
 using System.Text;
 
 namespace Backup.Ftp {
+
     /// <summary>
     /// The class manages all the ftp operations.
     /// </summary>

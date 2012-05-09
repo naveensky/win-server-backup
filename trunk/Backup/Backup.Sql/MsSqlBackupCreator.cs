@@ -22,6 +22,7 @@ namespace Backup.Sql {
         public NetworkCredential Credentials { get; set; }
         public string HostName { get; set; }
         public string DatabaseName { get; set; }
+        
         /// <summary>
         /// Directory where backup shall be created
         /// </summary>
@@ -29,7 +30,6 @@ namespace Backup.Sql {
         public string ConnectionString {
             get { return string.Format(_connString, HostName, DatabaseName, Credentials.UserName, Credentials.Password); }
         }
-
 
         public string CreateBackup() {
             var command = GetBackupCommand();
