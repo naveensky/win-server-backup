@@ -19,9 +19,9 @@ namespace Backup.Tests {
         public void Can_Create_MsSql_Backup() {
             var backupCreator = new MsSqlBackupCreator(DateTime.Now) {
                 Credentials = new NetworkCredential("sa", "asdf"),
-                DatabaseName = "decristal",
-                FilePath = @"E:\projects\De Cristal\portal",
-                HostName = @"laptop-001\sqlexpress"
+                DatabaseName = "CCE.HolyInnocents",
+                FilePath = @"D:\",
+                HostName = @".\sqlexpress"
             };
             var file = backupCreator.CreateBackup();
             Assert.IsTrue(File.Exists(file));
@@ -59,10 +59,10 @@ namespace Backup.Tests {
             var runner = Runner.Instance;
             runner.Settings = new Settings {
                 DatabasePassword = "asdf",
-                Databases = new List<string> { "DeCristal" },
-                DatabaseServer = @"laptop-001\sqlexpress",
+                Databases = new List<string> { "CCE.DemoSchool" },
+                DatabaseServer = ".\\sqlexpress",
                 DatabaseUsername = "sa",
-                Directories = new List<string> { @"E:\projects\De Cristal\portal\deploy" },
+                Directories = new List<string> { "c:\\school" },
                 FtpCredentials = new NetworkCredential("softwareftp", "Asdf1234"),
                 FtpHostname = "118.139.186.1",
                 FtpRoot = "",
