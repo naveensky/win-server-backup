@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <default>
+    <ftp>
+      <ftp_user>softwareftp</ftp_user>
+      <ftp_password>Asdf1234</ftp_password>
+      <ftp_host>118.139.186.1</ftp_host>
+      <ftp_directory>
+        <!-- This is the base directory to upload all data -->
+      </ftp_directory>
+    </ftp>
+    <db>
+      <db_password>asdf</db_password>
+      <db_server>.\sqlexpress</db_server>
+      <db_user>sa</db_user>
+    </db>
+  </default>
+  <application name="CCE.portal">
+    <ftp>
+      <ftp_user>softwareftp</ftp_user>
+      <ftp_password>Asdf1234</ftp_password>
+      <ftp_host>118.139.186.1</ftp_host>
+      <ftp_directory></ftp_directory>
+    </ftp>
+    <db>
+      <db_name>CCE.DemoSchool</db_name>
+    </db>
+    <fs>c:\school</fs>
+    <fs>c:\school1</fs>
+    <fs>c:\school2</fs>
+  </application>
+</root>

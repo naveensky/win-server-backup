@@ -45,6 +45,8 @@ namespace Backup.BO {
         }
 
         public void Run() {
+
+            var backupPath = string.Format(@"{0}\{1}\", _settings.TempDirectory, _backupTime.ToAppDateToString());
             var fsDataPath = string.Format(@"{0}\{1}\fs", _settings.TempDirectory, _backupTime.ToAppDateToString());
             var sqlDataPath = string.Format(@"{0}\{1}\sql", _settings.TempDirectory, _backupTime.ToAppDateToString());
 
@@ -84,6 +86,8 @@ namespace Backup.BO {
 
             ftpManager.TransferFile(fsBackupFiles, ftpFsRootPath);
             ftpManager.TransferFile(sqlBackupFiles, ftpSqlRootPath);
+
+            Directory.Delete(backupPath, true);             //delete the temp directory once database backup is done
         }
 
 
