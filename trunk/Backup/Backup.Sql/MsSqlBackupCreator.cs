@@ -9,7 +9,7 @@ using Backup.Util;
 
 namespace Backup.Sql {
     public class MsSqlBackupCreator : ISqlBackupCreator {
-        private static string _dbBackupScript = @"BACKUP DATABASE {0} TO DISK = '{1}'";
+        private const string DbBackupScript = @"BACKUP DATABASE [{0}] TO DISK = '{1}'";
         private const string _connString = @"Data Source={0};Initial Catalog={1};User ID={2};Password={3}";
         private SqlConnection _connection;
         private string _fileCompletePath;
@@ -57,7 +57,7 @@ namespace Backup.Sql {
         private string GetBackupSqlScript() {
             _fileCompletePath = string.Format(@"{0}\{1}.{2}.bak", FilePath, DatabaseName,
                                               _runtime.ToAppDateToString());
-            return string.Format(_dbBackupScript, DatabaseName, _fileCompletePath);
+            return string.Format(DbBackupScript, DatabaseName, _fileCompletePath);
         }
     }
 }
