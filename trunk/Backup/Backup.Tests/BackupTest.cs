@@ -45,32 +45,42 @@ namespace Backup.Tests {
         }
 
         [TestMethod]
-        public void Scheduler_Test() {
-            var scheduler = new Scheduler();
-            scheduler.Hour = 12;
-            scheduler.Minute = 0;
-            scheduler.Second = 0;
-            var currentTime = DateTime.Now;
-            Assert.IsFalse(scheduler.IsRunRequired(currentTime.AddHours(-24), currentTime));
+        public void Can_FTP_Delete_Folder() {
+            var manager = new FtpManager {
+                Hostname = "118.139.186.1",
+                Credential = new NetworkCredential("softwareftp", "Asdf1234")
+            };
+
+            Assert.IsTrue(manager.DeleteFtpDirectory(@"/2011.08.23"));
         }
+
 
         [TestMethod]
         public void Can_Schedule_Backup_Files() {
             var runner = Runner.Instance;
             runner.Settings = new Settings {
-                DatabasePassword = "asdf",
-                Databases = new List<string> { "CCE.DemoSchool" },
-                DatabaseServer = ".\\sqlexpress",
-                DatabaseUsername = "sa",
-                Directories = new List<string> { "c:\\school" },
+                Databases = new List<DatabaseConfig> { new DatabaseConfig { DatabaseName = "CCE.Login", Password = "asdf", Server = @".\sqlexpress", Username = "sa" } },
+                Directories = new List<string> { @"E:\myneta\html" },
                 FtpCredentials = new NetworkCredential("softwareftp", "Asdf1234"),
                 FtpHostname = "118.139.186.1",
                 FtpRoot = "",
-                TempDirectory = @"c:\temp"
+                TempDirectory = @"c:\temp",
+                ApplicationName = "tests",
+                BackupRetentionDays = 3                        //how old a backup should be kept
             };
 
             runner.Run();
 
+        }
+
+        [TestMethod]
+        public void Get_Root_Files() {
+            var manager = new FtpManager {
+                Hostname = "118.139.186.1",
+                Credential = new NetworkCredential("softwareftp", "Asdf1234")
+            };
+
+            Assert.IsTrue(manager.GetListing("").Any());
         }
 
 

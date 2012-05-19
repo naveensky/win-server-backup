@@ -69,10 +69,10 @@ namespace Backup.BO {
             //create database backups
             foreach (var database in _settings.Databases) {
                 var creator = new MsSqlBackupCreator(_backupTime) {
-                    DatabaseName = database,
+                    DatabaseName = database.DatabaseName,
                     Credentials =
-                        new NetworkCredential(_settings.DatabaseUsername, _settings.DatabasePassword),
-                    HostName = _settings.DatabaseServer,
+                        new NetworkCredential(database.Username, database.Password),
+                    HostName = database.Server,
                     FilePath = sqlDataPath
                 };
                 sqlBackupFiles.Add(creator.CreateBackup());
@@ -81,18 +81,33 @@ namespace Backup.BO {
             //start ftp transaction
             var ftpManager = new FtpManager { Credential = _settings.FtpCredentials, Hostname = _settings.FtpHostname };
 
-            var ftpFsRootPath = string.Format(@"{0}\{1}\{2}", _settings.FtpRoot, _backupTime.ToAppDateToString(), "FS");
-            var ftpSqlRootPath = string.Format(@"{0}\{1}\{2}", _settings.FtpRoot, _backupTime.ToAppDateToString(), "SQL");
+            var ftpFsRootPath = string.Format(@"{0}\{1}\{2}\{3}", _settings.FtpRoot, _backupTime.ToAppDateToString(), _settings.ApplicationName, "FS");
+            var ftpSqlRootPath = string.Format(@"{0}\{1}\{2}\{3}", _settings.FtpRoot, _backupTime.ToAppDateToString(), _settings.ApplicationName, "SQL");
 
             ftpManager.TransferFile(fsBackupFiles, ftpFsRootPath);
             ftpManager.TransferFile(sqlBackupFiles, ftpSqlRootPath);
 
             Directory.Delete(backupPath, true);             //delete the temp directory once database backup is done
+
+            if (_settings.BackupRetentionDays > 0)          //delete only if retention day count is greater than zero
+                DeleteOldBackups(ftpManager);
         }
 
+        private void DeleteOldBackups(FtpManager ftpManager) {
+            var currentFiles = ftpManager.GetListing(_settings.FtpRoot);
 
-        private string GetDirectory() {
-            return Path.GetTempPath();
+            //get date over which backup needs to be kept
+            var retentionDate = DateTime.UtcNow.AddDays(_settings.BackupRetentionDays * -1);
+
+            foreach (var currentFile in currentFiles) {
+                DateTime backupDate;
+                if (DateTime.TryParse(currentFile, out backupDate)) {
+                    if (backupDate < retentionDate.Date)
+                        ftpManager.DeleteFtpDirectory(string.Format(@"{0}/{1}/{2}", _settings.FtpRoot,
+                                                                    backupDate.ToAppDateToString(),
+                                                                    _settings.ApplicationName));
+                }
+            }
         }
     }
 }

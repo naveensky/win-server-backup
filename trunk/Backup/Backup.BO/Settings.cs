@@ -6,30 +6,48 @@ using System.Text;
 
 namespace Backup.BO {
     public class Settings {
-        public IEnumerable<string> Databases { get; set; }
+
+        public Settings() {
+            //by default temp directory will be on c:
+            TempDirectory = @"c:\temp\";
+        }
+
+        private string _applicationName;
+        private const string DefaultAppName = "Others";
+
+        public IEnumerable<DatabaseConfig> Databases { get; set; }
         public IEnumerable<string> Directories { get; set; }
+
+        public string ApplicationName {
+            get {
+                return string.IsNullOrEmpty(_applicationName) ? DefaultAppName : _applicationName;
+            }
+            set { _applicationName = value; }
+        }
 
         public NetworkCredential FtpCredentials { get; set; }
         public string FtpRoot { get; set; }
 
         public string FtpHostname { get; set; }
-        public string DatabaseServer { get; set; }
-        public string DatabaseUsername { get; set; }
-        public string DatabasePassword { get; set; }
         public string TempDirectory { get; set; }
 
-        public static Settings Create(IEnumerable<string> databases, IEnumerable<string> directories,
-            NetworkCredential credential, string ftpRoot, string ftpHostname, string databaseUsername, string databaseServer, string databasePassword) {
+        /// <summary>
+        /// No of days for which a backup should be kept on server, beyond which backups will be deleted.
+        /// If this is set to zero (0), then backups are never deleted.
+        /// </summary>
+        public int BackupRetentionDays { get; set; }
+
+        public static Settings Create(string applicationName, IEnumerable<DatabaseConfig> databases, IEnumerable<string> directories,
+            NetworkCredential credential, string ftpRoot, string ftpHostname, int backupRetentionDays = 0) {
 
             return new Settings {
-                DatabasePassword = databasePassword,
+                ApplicationName = applicationName,
                 Databases = databases,
-                DatabaseServer = databaseServer,
-                DatabaseUsername = databaseUsername,
                 Directories = directories,
                 FtpCredentials = credential,
                 FtpHostname = ftpHostname,
-                FtpRoot = ftpRoot
+                FtpRoot = ftpRoot,
+                BackupRetentionDays = backupRetentionDays
             };
         }
     }

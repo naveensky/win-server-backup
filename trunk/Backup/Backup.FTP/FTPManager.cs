@@ -25,6 +25,8 @@ namespace Backup.Ftp {
             CreateFtpDirectory(ftpDirectoryPath);
             using (var ftpClient = CreateClient()) {
                 foreach (var file in files) {
+                    if (file == null)
+                        continue;
                     var remotePath = string.Format(@"{0}\{1}", ftpDirectoryPath, file.Split(new[] { '\\' }).Last());
                     ftpClient.Upload(file, remotePath, FtpDataType.Binary);
                 }
@@ -54,6 +56,38 @@ namespace Backup.Ftp {
                 //DataChannelEncryption = true,
                 //DataChannelType = FtpDataChannelType.Active
             };
+        }
+
+        public IEnumerable<string> GetListing(string ftpPath) {
+            using (var ftpClient = CreateClient()) {
+                if (string.IsNullOrEmpty(ftpPath) || ftpPath.Equals(".") || ftpPath.Equals("/"))
+                    return ftpClient.GetListing(ftpPath).Select(x => x.Name);
+
+                if (ftpClient.DirectoryExists(ftpPath))
+                    return ftpClient.GetListing(ftpPath).Select(x => x.Name);
+            }
+            return new List<string>();
+        }
+
+        public bool DeleteFtpDirectory(string ftpPath) {
+            using (var ftpClient = CreateClient()) {
+                if (ftpClient.DirectoryExists(ftpPath)) {
+                    var directoryContents = ftpClient.GetListing(ftpPath);
+                    foreach (var file in directoryContents.Where(x => x.Type == FtpObjectType.File)) {
+                        ftpClient.RemoveFile(string.Format("{0}/{1}", ftpPath, file.Name));
+                    }
+
+                    foreach (var file in directoryContents.Where(x => x.Type == FtpObjectType.Directory)) {
+                        DeleteFtpDirectory(string.Format("{0}/{1}", ftpPath, file.Name));
+                    }
+
+                    ftpClient.RemoveDirectory(ftpPath);
+                } else if (ftpClient.FileExists(ftpPath)) {
+                    ftpClient.RemoveFile(ftpPath);
+                }
+            }
+
+            return true;
         }
     }
 }

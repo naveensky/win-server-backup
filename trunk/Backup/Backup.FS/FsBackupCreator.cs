@@ -8,7 +8,6 @@ using Ionic.Zip;
 
 namespace Backup.FS {
     public class FsBackupCreator : IFsBackupCreator {
-        private ZipFile _zipFile;
         private DateTime _runtime;
 
         public FsBackupCreator(DateTime runTime) {
